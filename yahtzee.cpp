@@ -12,8 +12,8 @@ enum score {
 	all, same, fullhouse, small, large, yahtzee
 };
 string score_type[ROUND_NUM] = {
-	"Ò»µã", "¶şµã", "Èıµã", "ËÄµã", "Îåµã", "Áùµã",
-	"È«Ñ¡", "ËÄÌõ", "ºùÂ«", "Ğ¡Ë³", "´óË³", "¿ìÍ§"
+	"ä¸€ç‚¹", "äºŒç‚¹", "ä¸‰ç‚¹", "å››ç‚¹", "äº”ç‚¹", "å…­ç‚¹",
+	"å…¨é€‰", "å››æ¡", "è‘«èŠ¦", "å°é¡º", "å¤§é¡º", "å¿«è‰‡"
 };
 
 class Dice {
@@ -102,6 +102,7 @@ public:
 	Player() {
 		totalScore = 0;
 		bonusScore = 0;
+		rewarded = false;
 		memset(scores, 0, sizeof(scores) );
 		memset(pendings, 0, sizeof(pendings) );
 		memset(selected, false, sizeof(selected) );
@@ -132,18 +133,18 @@ public:
 			dices[i].deselect();
 	}
 	void printDice() {
-		cout << "÷»×Ó×´Ì¬£º" << endl;
-		cout << "ĞòºÅ  ";
+		cout << "éª°å­çŠ¶æ€ï¼š" << endl;
+		cout << "åºå·  ";
 		for(int i = 1; i <= DICES_NUM; ++i)
 			cout << i << "  ";
-		cout << endl << "µãÊı  ";
+		cout << endl << "ç‚¹æ•°  ";
 		for(int i = 0; i < DICES_NUM; ++i)
 			cout << dices[i].getPoint() << "  ";
 		cout << endl << endl;
 	}
 	// in the player's turn, output +xx to show the score going to get
 	void printInfo(bool turn) {
-		cout << nickname << "µÄ¼Æ·Ö°å" << endl;
+		cout << nickname << "çš„è®¡åˆ†æ¿" << endl;
 
 		for(int i = 0; i < DICE_FACE; ++i) {
 			cout << i+1 << ". ";
@@ -156,8 +157,8 @@ public:
 			cout << endl;
 		}
 
-		cout << "Ğ¡¼Æ£º" << bonusScore << "/" << BONUS_TARGET << endl;
-		cout << "½±Àø·Ö35£º";
+		cout << "å°è®¡ï¼š" << bonusScore << "/" << BONUS_TARGET << endl;
+		cout << "å¥–åŠ±åˆ†35ï¼š";
 		if(bonusScore >= BONUS_TARGET)
 			cout << "+35" << endl << endl;
 		else cout << "0" << endl << endl;
@@ -173,7 +174,7 @@ public:
 				cout << "  +" << pendings[i];
 			cout << endl;
 		}
-		cout << endl << "×Ü·Ö£º" << totalScore << endl << endl << endl;
+		cout << endl << "æ€»åˆ†ï¼š" << totalScore << endl << endl << endl;
 	}
 	void selectDices(string diceIndexes) {
 		// empty input means select all the dices
@@ -252,10 +253,10 @@ public:
 	}
 	void setNicknames() {
 		string nickname;
-		cout << "ÇëÊäÈëÍæ¼ÒAµÄêÇ³Æ£º";
+		cout << "è¯·è¾“å…¥ç©å®¶Açš„æ˜µç§°ï¼š";
 		cin >> nickname;
 		A.setNickname(nickname);
-		cout << "ÇëÊäÈëÍæ¼ÒBµÄêÇ³Æ£º";
+		cout << "è¯·è¾“å…¥ç©å®¶Bçš„æ˜µç§°ï¼š";
 		cin >> nickname;
 		B.setNickname(nickname);
 		// deal the enter input
@@ -286,19 +287,19 @@ public:
 			printStatus(cnt%2);
 			// show the dices exclude before the first shuffle
 			if(i == SHUFFLE_CHANCE)
-				cout << p.getNickname() << "µÄ»ØºÏ" << endl;
+				cout << p.getNickname() << "çš„å›åˆ" << endl;
 			else 
 				p.printDice();
 
-			cout << "°´ÏÂ»Ø³µÖÀ÷»×Ó£¬Ê£Óà" << i << "´Î»ú»á...";
+			cout << "æŒ‰ä¸‹å›è½¦æ·éª°å­ï¼Œå‰©ä½™" << i << "æ¬¡æœºä¼š...";
 			getline(cin, buf);
 			p.shuffle();
 			p.getScores();
 			printStatus(cnt%2);
 			p.printDice();
 			if(i > 1) {
-				cout << "»¹Ê£" << i-1 << "´Î" << "ÖØÖÀ»ú»á" << endl;
-				cout << "Ñ¡ÔñÒª±£Áô÷»×ÓµÄĞòºÅ£¨¿ÕÊäÈë£ºÈ«²¿±£Áô²¢Ö±½Ó½øÈëÌî±í½×¶Î£»-1£ºÈ«²¿ÖØÖÀ£©£º";
+				cout << "è¿˜å‰©" << i-1 << "æ¬¡" << "é‡æ·æœºä¼š" << endl;
+				cout << "é€‰æ‹©è¦ä¿ç•™éª°å­çš„åºå·ï¼ˆç©ºè¾“å…¥ï¼šå…¨éƒ¨ä¿ç•™å¹¶ç›´æ¥è¿›å…¥å¡«è¡¨é˜¶æ®µï¼›-1ï¼šå…¨éƒ¨é‡æ·ï¼‰ï¼š";
 				getline(cin, buf);
 				p.selectDices(buf);
 				// empty input means remain the all, and turn to the next stage
@@ -306,22 +307,22 @@ public:
 					break;
 			}
 			else {
-				cout << "´ÎÊıÒÑÓÃ¾¡£¬½øÈëÌî±í½×¶Î";
+				cout << "æ¬¡æ•°å·²ç”¨å°½ï¼Œè¿›å…¥å¡«è¡¨é˜¶æ®µ";
 			}
 		}
 		int scoreType;
-		cout << "ÇëÊäÈë½«ÌîÏîÄ¿µÄĞòºÅ£º";
+		cout << "è¯·è¾“å…¥å°†å¡«é¡¹ç›®çš„åºå·ï¼š";
 		while(true) {
 			cin >> scoreType;
 			int status = p.fillBlank(scoreType-1);
 			if(status == -1)
-				cout << "ÊäÈëµÄĞòºÅ·Ç·¨£¬ÇëÖØÊÔ£º";
+				cout << "è¾“å…¥çš„åºå·éæ³•ï¼Œè¯·é‡è¯•ï¼š";
 			else if(status == -2)
-				cout << "ËùÑ¡ÏîÄ¿ÒÑ±»ÌîĞ´¹ı£¬ÇëÖØÊÔ£º";
+				cout << "æ‰€é€‰é¡¹ç›®å·²è¢«å¡«å†™è¿‡ï¼Œè¯·é‡è¯•ï¼š";
 			else {
 				printStatus(cnt%2);
 				p.printDice();
-				cout << "³É¹¦ÌîĞ´£¬°´ÏÂ»Ø³µ½»»»»ØºÏ...";
+				cout << "æˆåŠŸå¡«å†™ï¼ŒæŒ‰ä¸‹å›è½¦äº¤æ¢å›åˆ...";
 				getline(cin, buf);
 				getline(cin, buf);
 				break;
@@ -332,14 +333,14 @@ public:
 		int aScore = A.getTotalScore();
 		int bScore = B.getTotalScore();
 		cout << endl;
-		cout << A.getNickname() << ": " << aScore << "·Ö" << endl;
-		cout << B.getNickname() << ": " << bScore << "·Ö" << endl;
+		cout << A.getNickname() << ": " << aScore << "åˆ†" << endl;
+		cout << B.getNickname() << ": " << bScore << "åˆ†" << endl;
 		if(aScore > bScore)
-			cout << "¹§Ï²" << A.getNickname() << "Ó®µÃ±ÈÈü£¡" << endl << endl;
+			cout << "æ­å–œ" << A.getNickname() << "èµ¢å¾—æ¯”èµ›ï¼" << endl << endl;
 		else if(aScore < bScore)
-			cout << "¹§Ï²" << B.getNickname() << "Ó®µÃ±ÈÈü£¡" << endl << endl;
+			cout << "æ­å–œ" << B.getNickname() << "èµ¢å¾—æ¯”èµ›ï¼" << endl << endl;
 		else
-			cout << "Æ½¾Ö£¡" << endl << endl;
+			cout << "å¹³å±€ï¼" << endl << endl;
 	}
 
 private:
@@ -351,7 +352,7 @@ int main() {
 	srand(time(NULL));
 	while(true) {
 		Game game;
-		cout << "ÊÇ·ñ½øĞĞĞÂµÄÒ»ÂÖÓÎÏ·£¿ (y/n)" << endl;
+		cout << "æ˜¯å¦è¿›è¡Œæ–°çš„ä¸€è½®æ¸¸æˆï¼Ÿ (y/n)" << endl;
 		string buf;
 		cin >> buf;
 		if(buf != "y")
